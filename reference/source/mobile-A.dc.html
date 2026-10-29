@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<title>KHAO — Street Fire (mobile)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;600;700;800&amp;family=Bebas+Neue&amp;family=Galada&amp;family=Hind+Siliguri:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#111111}
+a{color:#FFC107}a:hover{color:#FF6A00}
+*{box-sizing:border-box}
+.ln{display:block;overflow:hidden;padding-bottom:.06em}
+.ln>span{display:inline-block;animation:lineUp 1.1s cubic-bezier(.2,.8,.2,1) both}
+.d1>span{animation-delay:.15s}.d2>span{animation-delay:.32s}.d3{animation:fadeUp 1s .6s both}.d4{animation:fadeUp 1s .8s both}
+@keyframes lineUp{from{transform:translateY(110%)}to{transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes zoomIn{from{transform:scale(1.12)}to{transform:scale(1)}}
+@keyframes mq{to{transform:translateX(-50%)}}
+@keyframes chk{to{background-position:48px 0}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-8px) rotate(3deg)}}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.96)}}
+@keyframes drop{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+@keyframes cue{0%{transform:translateY(0);opacity:0}30%{opacity:1}100%{transform:translateY(14px);opacity:0}}
+.hero-vid{animation:zoomIn 2.4s cubic-bezier(.2,.8,.2,1) both}
+.mq{display:flex;width:max-content;animation:mq 22s linear infinite}
+.chk{height:48px;background-size:48px 48px;background-image:repeating-conic-gradient(var(--a) 0 25%, var(--b) 0 50%);animation:chk 8s linear infinite}
+.chk-bd{--a:#4A2C15;--b:#111111}
+.chk-dc{--a:#111111;--b:#FFF6E6}
+.cue{animation:cue 1.8s ease-in-out infinite}
+.drop{animation:drop .35s cubic-bezier(.2,.8,.2,1) both}
+.burger{cursor:pointer;width:48px;height:48px;border-radius:14px;border:1.5px solid rgba(255,246,230,.35);background:rgba(17,17,17,.4);color:#FFF6E6;display:flex;align-items:center;justify-content:center}
+.mc{flex:0 0 auto;background:#FFF6E6;color:#111111;border-radius:26px;display:flex;flex-direction:column;align-items:center;text-align:center;transition:all .5s cubic-bezier(.2,.8,.2,1)}
+.mc.side{width:150px;padding:0 12px 18px;opacity:.5;transform:scale(.9)}
+.mc.side .ci{width:110px;height:110px;margin-top:-46px}
+.mc.act{width:270px;padding:0 18px 22px;background:#FFC107;border-radius:110px 110px 26px 26px;animation:cardIn .5s cubic-bezier(.2,.8,.2,1) both}
+.mc.act .ci{width:190px;height:190px;margin-top:-80px;animation:floaty 4s ease-in-out infinite}
+.ci{border-radius:50%;overflow:hidden;border:4px solid #4A2C15;background:#FF6A00;box-shadow:0 14px 24px rgba(0,0,0,.35)}
+.sz{cursor:pointer;min-width:62px;min-height:44px;border:2px solid #111111;background:#FFF6E6;color:#111111;border-radius:12px;font-family:'Anek Bangla',sans-serif;font-weight:700;font-size:14px;transition:all .25s}
+.sz.on{background:#111111;color:#FFC107}
+.arr{cursor:pointer;width:48px;height:48px;border-radius:50%;border:2px solid #FFF6E6;background:transparent;color:#FFF6E6;display:flex;align-items:center;justify-content:center;transition:all .25s}
+.arr:active{background:#FFC107;border-color:#FFC107;color:#111111}
+.pip{width:8px;height:8px;border-radius:50%;background:rgba(255,246,230,.3);transition:all .3s}
+.pip.on{width:24px;border-radius:5px;background:#FFC107}
+.btn{transition:transform .2s}
+.btn:active{transform:scale(.97)}
+.rv{opacity:1}
+@supports (animation-timeline: view()){
+  .rv{animation:fadeUp linear both;animation-timeline:view();animation-range:entry 5% cover 25%}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; background: #111111; color: #FFF6E6; font-family: 'Hind Siliguri', sans-serif; overflow: hidden; position: relative">
+
+<section style="position: relative; height: 760px; overflow: hidden">
+<video class="hero-vid" ref="{{ setVid }}" src="/_blob/a57be5d671afa5171c917adef9b7d501" poster="/_blob/27b67abefff49f5bc2333513dc239c0a" muted="" autoplay="" loop="" playsinline="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover"></video>
+<div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17,17,17,0.75) 0%, rgba(17,17,17,0.1) 28%, rgba(17,17,17,0.4) 52%, rgba(17,17,17,0.97) 100%)"></div>
+
+<header style="position: absolute; top: 0; left: 0; right: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px">
+<img src="/_blob/2a8953b57c4467d58c1427af4ac6268c" alt="KHAO logo" style="height: 48px; width: auto">
+<div style="display: flex; gap: 8px; align-items: center">
+<a class="btn" href="#m-visit" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; background: #FFC107; color: #111111; text-decoration: none; font-family: 'Bebas Neue', sans-serif; font-size: 19px; letter-spacing: 1px; border-radius: 999px">ORDER</a>
+<button class="burger" onClick="{{ toggleMenu }}" aria-label="মেনু খোলো" aria-expanded="{{ menuOpenStr }}">
+<sc-if value="{{ menuClosed }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"></path></svg></sc-if>
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></sc-if>
+</button>
+</div>
+</header>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+<nav class="drop" style="position: absolute; top: 76px; left: 12px; right: 12px; z-index: 6; background: #FFF6E6; color: #111111; border-radius: 24px; padding: 10px; display: flex; flex-direction: column; box-shadow: 0 24px 50px rgba(0,0,0,0.5)">
+<a href="#m-sig" onClick="{{ closeMenu }}" style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; color: #111111; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 20px; border-bottom: 1px dashed #C9B48F">স্পেশাল<span style="font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #B32D00">01</span></a>
+<a href="#m-menu" onClick="{{ closeMenu }}" style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; color: #111111; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 20px; border-bottom: 1px dashed #C9B48F">মেনু<span style="font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #B32D00">02</span></a>
+<a href="#m-day" onClick="{{ closeMenu }}" style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; color: #111111; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 20px; border-bottom: 1px dashed #C9B48F">KHAO-এর একটা দিন<span style="font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #B32D00">03</span></a>
+<a href="#m-visit" onClick="{{ closeMenu }}" style="display: flex; justify-content: space-between; align-items: center; min-height: 56px; padding: 0 16px; color: #111111; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 20px">খুঁজে নাও<span style="font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #B32D00">04</span></a>
+</nav>
+</sc-if>
+
+<div style="position: absolute; left: 16px; right: 16px; bottom: 48px; z-index: 2">
+<div class="d3" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid rgba(255,246,230,0.4); border-radius: 999px; font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 1.5px; color: #FFC107; margin-bottom: 18px">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="#FF6A00" aria-hidden="true"><path d="M12 2c1 3-1 4.5-1 7 0 1.5 1 2.5 2 2.5s2-1 2-2.5c0-.8-.3-1.6-.6-2.2C16.9 8.6 19 11.3 19 14.5 19 18.6 15.9 22 12 22s-7-3.4-7-7.5C5 9.6 9.6 6.5 12 2z"></path></svg>
+NOW OPEN · MOHAMMADPUR
+</div>
+<h1 style="margin: 0; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 66px; line-height: 0.98">
+<span class="ln d1"><span>যত খাবে</span></span>
+<span class="ln d2"><span style="color: #FFC107">তত চাবে</span></span>
+</h1>
+<p class="d3" style="margin: 16px 0 0; font-size: 16px; line-height: 1.6; color: rgba(255,246,230,0.88)">মোহাম্মদপুরের অলিগলিতে এবার জমবে আসল স্বাদের আড্ডা। ঝাল সিঙ্গারা, ক্রিসপি রোল, খিচুড়ি আর চটপটি — সব এক জায়গায়।</p>
+<div class="d4" style="display: flex; flex-direction: column; gap: 10px; margin-top: 22px">
+<a class="btn" href="#m-menu" style="display: flex; align-items: center; justify-content: center; min-height: 54px; background: #FF6A00; color: #111111; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 18px; border-radius: 999px">মেনু দেখো</a>
+<a class="btn" href="#m-visit" style="display: flex; align-items: center; justify-content: center; min-height: 54px; border: 2px solid #FFF6E6; color: #FFF6E6; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 18px; border-radius: 999px">কোথায় আছি?</a>
+</div>
+</div>
+<div style="position: absolute; left: 50%; bottom: 12px; z-index: 2; margin-left: -11px; width: 22px; height: 34px; border: 2px solid rgba(255,246,230,0.6); border-radius: 12px; display: flex; justify-content: center; padding-top: 6px">
+<div class="cue" style="width: 3px; height: 7px; border-radius: 2px; background: #FFC107"></div>
+</div>
+</section>
+
+<div style="background: #FFC107; color: #111111; transform: rotate(-2deg); margin: -10px -16px 0; padding: 12px 0; position: relative; z-index: 4; overflow: hidden">
+<div class="mq" style="gap: 22px; font-family: 'Bebas Neue', sans-serif; font-size: 30px; white-space: nowrap; align-items: center">
+<span>NAGA ALOO SINGARA</span><span style="color: #E63900">✺</span><span>CRISPY CHICKEN ROLL</span><span style="color: #E63900">✺</span><span>FISH CUTLET</span><span style="color: #E63900">✺</span><span>KHICHURI</span><span style="color: #E63900">✺</span><span>CHOTPOTI</span><span style="color: #E63900">✺</span>
+<span>NAGA ALOO SINGARA</span><span style="color: #E63900">✺</span><span>CRISPY CHICKEN ROLL</span><span style="color: #E63900">✺</span><span>FISH CUTLET</span><span style="color: #E63900">✺</span><span>KHICHURI</span><span style="color: #E63900">✺</span><span>CHOTPOTI</span><span style="color: #E63900">✺</span>
+</div>
+</div>
+
+<section id="m-sig" style="background: #4A2C15; color: #FFF6E6; padding: 80px 0 0; margin-top: -10px">
+<div class="rv" style="padding: 0 16px">
+<div style="font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 3px; color: rgba(255,246,230,0.75)">SIGNATURE BITES</div>
+<h2 style="margin: 6px 0 0; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 44px; line-height: 1.02; color: #FFC107">একটু আলাদা।<br>ঝালে-মজায় ভরা।</h2>
+<p style="margin: 14px 0 0; font-size: 15px; line-height: 1.6; color: rgba(255,246,230,0.8)">পছন্দেরটা বেছে নাও, পরিমাণ ঠিক করো — বাকিটা আমাদের।</p>
+</div>
+
+<div style="display: flex; justify-content: center; align-items: flex-end; gap: 12px; padding-top: 100px; margin: 0 -70px">
+<sc-for list="{{ slides }}" as="c" hint-placeholder-count="3">
+<article class="{{ c.cls }}" key="{{ c.id }}">
+<div class="ci">
+<sc-if value="{{ c.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ c.img }}" alt="{{ c.name }}" style="width: 100%; height: 100%; object-fit: cover; display: block"></sc-if>
+<sc-if value="{{ c.noImg }}" hint-placeholder-val="{{ false }}"><div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #111111; font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 0.9; padding: 12px">{{ c.tag }}<span style="font-family: 'Hind Siliguri', sans-serif; font-size: 10px; margin-top: 4px">[ছবি দরকার]</span></div></sc-if>
+</div>
+<div style="margin-top: 14px; padding: 5px 12px; background: #111111; color: #FFC107; border-radius: 9px; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 14px;">FROM ৳{{ c.from }}</div>
+<h3 style="margin: 10px 0 4px; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 22px; line-height: 1.15">{{ c.name }}</h3>
+<sc-if value="{{ c.isAct }}" hint-placeholder-val="{{ true }}">
+<p style="margin: 0; font-size: 13px; line-height: 1.45; color: #4A2C15">{{ c.sub }}</p>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 14px">
+<sc-if value="{{ c.hasTiers }}" hint-placeholder-val="{{ true }}">
+<div role="group" aria-label="পরিমাণ" style="display: flex; gap: 6px">
+<sc-for list="{{ sizes }}" as="z" hint-placeholder-count="3"><button class="{{ z.cls }}" onClick="{{ z.pick }}">{{ z.label }}</button></sc-for>
+</div>
+</sc-if>
+<div style="display: flex; align-items: center; gap: 8px; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 13px">
+<span>ঝাল</span>
+<div style="display: flex; gap: 3px" aria-label="{{ c.spiceLabel }}"><sc-for list="{{ c.spice }}" as="sp" hint-placeholder-count="5"><span style="width: 14px; height: 9px; border-radius: 2px; background: {{ sp.c }}"></span></sc-for></div>
+</div>
+<div style="font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 42px; line-height: 1">৳{{ c.price }}</div>
+<a class="btn" href="#m-visit" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; width: 100%; background: #111111; color: #FFC107; border-radius: 14px; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 16px">অর্ডার করো</a>
+</div>
+</sc-if>
+</article>
+</sc-for>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 28px 0 56px">
+<button class="arr" onClick="{{ prev }}" aria-label="আগেরটা"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<div style="display: flex; gap: 6px; align-items: center"><sc-for list="{{ pips }}" as="pp" hint-placeholder-count="7"><span class="{{ pp.cls }}"></span></sc-for></div>
+<button class="arr" onClick="{{ next }}" aria-label="পরেরটা"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<div class="chk chk-bd" aria-hidden="true"></div>
+</section>
+
+<section id="m-menu" style="padding: 72px 16px 80px">
+<div class="rv" style="text-align: center; margin-bottom: 32px">
+<div style="font-family: 'Galada', cursive; font-size: 24px; color: #FFC107">ছোট পিস থেকে বড় আড্ডা</div>
+<h2 style="margin: 2px 0 0; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 50px; line-height: 1">টুকটাক খাও</h2>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="3">
+<article class="rv" style="background: #FFF6E6; color: #111111; border: 2px solid #111111; border-radius: 22px; padding: 16px">
+<div style="display: flex; align-items: center; gap: 14px">
+<div style="width: 72px; height: 72px; flex-shrink: 0; border-radius: 50%; overflow: hidden; border: 2px solid #111111; background: #E63900">
+<sc-if value="{{ it.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ it.img }}" alt="{{ it.name }}" style="width: 100%; height: 100%; object-fit: cover; display: block"></sc-if>
+<sc-if value="{{ it.noImg }}" hint-placeholder-val="{{ false }}"><div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #FFF6E6; font-size: 10px">[ছবি]</div></sc-if>
+</div>
+<div>
+<div style="font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 22px; line-height: 1.2">{{ it.name }}</div>
+<div style="font-size: 14px; color: #4A2C15">{{ it.line }}</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px">
+<div style="text-align: center; padding: 8px 4px; background: #FFC107; border-radius: 12px"><div style="font-family: 'Anek Bangla', sans-serif; font-weight: 600; font-size: 12px">অল্প · ৪ পিস</div><div style="font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 22px">৳{{ it.p0 }}</div></div>
+<div style="text-align: center; padding: 8px 4px; background: #FF6A00; border-radius: 12px"><div style="font-family: 'Anek Bangla', sans-serif; font-weight: 600; font-size: 12px">বেশি · ৮ পিস</div><div style="font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 22px">৳{{ it.p1 }}</div></div>
+<div style="text-align: center; padding: 8px 4px; background: #111111; color: #FFF6E6; border-radius: 12px"><div style="font-family: 'Anek Bangla', sans-serif; font-weight: 600; font-size: 12px">অনেক · ১২ পিস</div><div style="font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 22px; color: #FFC107">৳{{ it.p2 }}</div></div>
+</div>
+</article>
+</sc-for>
+<article class="rv" style="background: #FFC107; color: #111111; border: 2px solid #111111; border-radius: 22px; padding: 22px; position: relative; overflow: hidden">
+<div style="display: inline-block; transform: rotate(-4deg); font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 48px; line-height: 1">সব খাও</div>
+<div style="font-family: 'Galada', cursive; font-size: 19px; margin-top: 6px; color: #4A2C15">একটাতে মন ভরে না? সবই একটু একটু খাও!</div>
+<ul style="margin: 14px 0 0; padding: 0; list-style: none; font-size: 15px; line-height: 1.7; font-weight: 500; max-width: 210px">
+<li>২ পিস নাগা আলু সিঙ্গারা</li><li>২ পিস ক্রিসপি চিকেন রোল</li><li>২ পিস ফিশ কাটলেট + ২টি সস</li>
+</ul>
+<div style="position: absolute; right: 18px; bottom: 20px; width: 100px; height: 100px; border-radius: 50%; background: #111111; color: #FFC107; display: flex; align-items: center; justify-content: center; transform: rotate(-8deg); font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 30px">৳১১০</div>
+</article>
+</div>
+</section>
+
+<div class="chk chk-dc" aria-hidden="true"></div>
+<section id="m-day" style="background: #FFF6E6; color: #111111; padding: 72px 16px 80px">
+<div class="rv" style="text-align: center; margin-bottom: 40px">
+<div style="font-family: 'Galada', cursive; font-size: 24px; color: #B32D00">সকাল ১১টা থেকে রাত ১০টা</div>
+<h2 style="margin: 2px 0 0; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 42px; line-height: 1.05">KHAO-এর একটা দিন</h2>
+</div>
+<div style="position: relative; padding-left: 44px">
+<div style="position: absolute; left: 17px; top: 8px; bottom: 8px; border-left: 3px dashed #111111"></div>
+
+<article class="rv" style="position: relative; margin-bottom: 40px">
+<div style="position: absolute; left: -44px; top: 0; width: 38px; height: 38px; border-radius: 50%; background: #FFC107; border: 3px solid #111111; display: flex; align-items: center; justify-content: center; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 16px">১১</div>
+<div style="font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 16px; color: #B32D00; padding-top: 8px">দুপুর · ১১টা – ৪টা</div>
+<div style="margin-top: 10px; height: 200px; border-radius: 20px; overflow: hidden; border: 2px solid #111111"><img src="/_blob/a062ecf0d7debd580114f38ffc4d8a92" alt="Beef jhura khichuri" style="width: 100%; height: 100%; object-fit: cover; display: block"></div>
+<h3 style="margin: 14px 0 6px; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 26px">বিফ ঝুরা খিচুড়ি <span style="color: #B32D00">৳১৯৯</span></h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #333333">ঘরের বানানো আচার, পেঁয়াজ ভর্তা আর garden সালাদের সাথে। দুপুরটা জমুক এক প্লেটেই!</p>
+</article>
+
+<article class="rv" style="position: relative; margin-bottom: 40px">
+<div style="position: absolute; left: -44px; top: 0; width: 38px; height: 38px; border-radius: 50%; background: #FF6A00; border: 3px solid #111111; display: flex; align-items: center; justify-content: center; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 16px">৫</div>
+<div style="font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 16px; color: #B32D00; padding-top: 8px">বিকেল · ৫টা থেকে</div>
+<div style="margin-top: 10px; height: 200px; border-radius: 20px; overflow: hidden; border: 2px solid #111111"><img src="/_blob/f9503d64b859674710638e5f39b2bae5" alt="Shahi chotpoti" style="width: 100%; height: 100%; object-fit: cover; display: block"></div>
+<h3 style="margin: 14px 0 6px; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 26px">KHAO শাহী চটপটি <span style="color: #B32D00">৳৯৯</span></h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #333333">আমাদের ঘরানায় বানানো, বিকেলের আড্ডার জন্য একদম ঠিকঠাক। আড্ডা থাকলে চটপটি তো লাগবেই!</p>
+</article>
+
+<article class="rv" style="position: relative">
+<div style="position: absolute; left: -44px; top: 0; width: 38px; height: 38px; border-radius: 50%; background: #E63900; color: #FFFFFF; border: 3px solid #111111; display: flex; align-items: center; justify-content: center; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 16px">১০</div>
+<div style="font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 16px; color: #B32D00; padding-top: 8px">সারাদিন · রাত ১০টা পর্যন্ত</div>
+<div style="margin-top: 10px; border-radius: 20px; border: 2px solid #111111; background: #4A2C15; color: #FFF6E6; padding: 22px; display: flex; flex-direction: column; gap: 16px">
+<div style="font-family: 'Galada', cursive; font-size: 22px; line-height: 1.3">এক কাপ হলে আরেক কাপ চাইতেই পারে!</div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 17px">
+<div style="display: flex; justify-content: space-between"><span>দুধ চা</span><span style="color: #FFC107">৳৩০</span></div>
+<div style="display: flex; justify-content: space-between"><span>অ্যাপল ফিজ মোহিতো</span><span style="color: #FFC107">৳৪০</span></div>
+<div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; opacity: 0.85"><span>গ্রিন সস / তেঁতুলের সস</span><span style="color: #FFC107">৳১০</span></div>
+</div>
+</div>
+<h3 style="margin: 14px 0 6px; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 26px">গরমে আর ঠান্ডায় চুমুক</h3>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #333333">আড্ডা লম্বা হলে চা-ও লম্বা হবে। ঠান্ডা চাইলে ফিজি মোহিতো আছে।</p>
+</article>
+</div>
+</section>
+<div class="chk chk-dc" aria-hidden="true" style="transform: scaleY(-1)"></div>
+
+<section id="m-visit" style="padding: 72px 16px 80px">
+<div class="rv" style="border-radius: 24px; overflow: hidden; height: 300px"><img src="/_blob/b1f12e0ac1c4b6e31d171219c326d28b" alt="KHAO counter in Mohammadpur" style="width: 100%; height: 100%; object-fit: cover; display: block"></div>
+<div class="rv">
+<div style="font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 3px; color: #FF6A00; margin-top: 32px">04 — FIND US</div>
+<h2 style="margin: 6px 0 14px; font-family: 'Anek Bangla', sans-serif; font-weight: 800; font-size: 44px; line-height: 1.02">একবার খাও,<br><span style="color: #FFC107">বারবার আসো!</span></h2>
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: rgba(255,246,230,0.75)">কাউন্টারে অর্ডার দাও, QR দিয়ে পে করো, গরম গরম তুলে নাও।</p>
+<dl style="margin: 0; display: flex; flex-direction: column; gap: 16px; font-size: 16px">
+<div style="display: flex; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid #262626"><dt style="width: 72px; flex-shrink: 0; font-family: 'Anek Bangla', sans-serif; font-weight: 700; color: #FFC107; font-size: 17px">ঠিকানা</dt><dd style="margin: 0">[পুরো ঠিকানা], মোহাম্মদপুর, ঢাকা</dd></div>
+<div style="display: flex; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid #262626"><dt style="width: 72px; flex-shrink: 0; font-family: 'Anek Bangla', sans-serif; font-weight: 700; color: #FFC107; font-size: 17px">খোলা</dt><dd style="margin: 0">প্রতিদিন সকাল ১১টা – রাত ১০টা</dd></div>
+<div style="display: flex; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid #262626"><dt style="width: 72px; flex-shrink: 0; font-family: 'Anek Bangla', sans-serif; font-weight: 700; color: #FFC107; font-size: 17px">ফোন</dt><dd style="margin: 0">[ফোন নম্বর]</dd></div>
+<div style="display: flex; gap: 14px"><dt style="width: 72px; flex-shrink: 0; font-family: 'Anek Bangla', sans-serif; font-weight: 700; color: #FFC107; font-size: 17px">ফলো</dt><dd style="margin: 0"><a href="#m-visit">Facebook</a> · <a href="#m-visit">Instagram</a></dd></div>
+</dl>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 28px">
+<a class="btn" href="#m-visit" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; background: #FFC107; color: #111111; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 17px; border-radius: 999px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>ম্যাপ</a>
+<a class="btn" href="#m-visit" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; border: 2px solid #FFF6E6; color: #FFF6E6; text-decoration: none; font-family: 'Anek Bangla', sans-serif; font-weight: 700; font-size: 17px; border-radius: 999px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFF6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg>কল করো</a>
+</div>
+</div>
+</section>
+
+<div class="chk chk-dc" aria-hidden="true"></div>
+<footer style="background: #FFF6E6; color: #111111; padding: 36px 16px 40px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center">
+<img src="/_blob/4d8ea32ba4b26190bce14255ebfcbfc6" alt="KHAO" style="height: 60px; width: auto">
+<div style="font-family: 'Galada', cursive; font-size: 22px">ভালো খাবার, ভালো মামুর, ভালো আড্ডা</div>
+<div style="font-size: 13px; color: #4A2C15">© 2026 KHAO · Mohammadpur</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":5800}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { idx: 1, tier: 0, menu: false };
+    this.setVid = (el) => {
+      if (!el) return;
+      el.muted = true; el.loop = true; el.playsInline = true;
+      const p = el.play && el.play();
+      if (p && p.catch) p.catch(() => {});
+    };
+  }
+  renderVals() {
+    const R = {
+      roll: '/_blob/645da1c39f8ae47531577f2347fbcf23', roll2: '/_blob/f9893b2fb3c711537e1f064663bb8c63',
+      cutlet: '/_blob/7edd30f3a4cfb234419df0723fe19fe8', khichuri: '/_blob/a062ecf0d7debd580114f38ffc4d8a92',
+      chotpoti: '/_blob/f9503d64b859674710638e5f39b2bae5'
+    };
+    const all = [
+      { id: 'singara', name: 'নাগা আলু সিঙ্গারা', sub: 'ঝালেই আলাদা মজা!', tag: 'NAGA HOT', prices: ['৬০', '১২০', '১৮০'], heat: 5, img: '' },
+      { id: 'roll', name: 'ক্রিসপি চিকেন রোল', sub: 'বাইরে ক্রিসপি, ভিতরে juicy!', prices: ['৮০', '১৬০', '২৪০'], heat: 2, img: R.roll },
+      { id: 'cutlet', name: 'ফিশ কাটলেট', sub: 'সফট ভিতর, ক্রিসপি বাইরে।', prices: ['৮০', '১৬০', '২৪০'], heat: 1, img: R.cutlet },
+      { id: 'combo', name: 'সব খাও কম্বো', sub: '২ সিঙ্গারা · ২ রোল · ২ কাটলেট · ২ সস', prices: ['১১০'], heat: 3, img: R.roll2 },
+      { id: 'khichuri', name: 'বিফ ঝুরা খিচুড়ি', sub: 'আচার, পেঁয়াজ ভর্তা আর সালাদের সাথে', prices: ['১৯৯'], heat: 3, img: R.khichuri },
+      { id: 'chotpoti', name: 'KHAO শাহী চটপটি', sub: 'বিকেলের আড্ডার সেরা সঙ্গী', prices: ['৯৯'], heat: 4, img: R.chotpoti },
+      { id: 'cha', name: 'দুধ চা', sub: 'এক কাপ হলে আরেক কাপ চাইতেই পারে!', tag: 'MILK TEA', prices: ['৩০'], heat: 0, img: '' }
+    ];
+    const n = all.length, idx = this.state.idx, tier = this.state.tier;
+    const slides = [-1, 0, 1].map((o) => {
+      const it = all[(idx + o + n) % n];
+      const act = o === 0;
+      const t = it.prices.length > 1 ? tier : 0;
+      return {
+        ...it, cls: 'mc ' + (act ? 'act' : 'side'), isAct: act,
+        hasImg: !!it.img, noImg: !it.img, hasTiers: it.prices.length > 1,
+        from: it.prices[0], price: it.prices[t],
+        spice: [0, 1, 2, 3, 4].map((k) => ({ c: k < it.heat ? '#E63900' : 'rgba(17,17,17,0.18)' })),
+        spiceLabel: 'ঝাল ' + it.heat + '/৫'
+      };
+    });
+    const go = (d) => () => this.setState({ idx: (idx + d + n) % n, tier: 0 });
+    const sizes = ['অল্প', 'বেশি', 'অনেক'].map((l, k) => ({ label: l, cls: 'sz' + (k === tier ? ' on' : ''), pick: () => this.setState({ tier: k }) }));
+    const pips = all.map((_, k) => ({ cls: 'pip' + (k === idx ? ' on' : '') }));
+    const items = [
+      { name: 'নাগা আলু সিঙ্গারা', line: 'ঝালেই আলাদা মজা!', p0: '৬০', p1: '১২০', p2: '১৮০', img: '' },
+      { name: 'ক্রিসপি চিকেন রোল', line: 'বাইরে ক্রিসপি, ভিতরে juicy!', p0: '৮০', p1: '১৬০', p2: '২৪০', img: R.roll2 },
+      { name: 'ফিশ কাটলেট', line: 'সফট ভিতর, ক্রিসপি বাইরে।', p0: '৮০', p1: '১৬০', p2: '২৪০', img: R.cutlet }
+    ].map((x) => ({ ...x, hasImg: !!x.img, noImg: !x.img }));
+    const open = this.state.menu;
+    return {
+      slides, sizes, pips, prev: go(-1), next: go(1), items, setVid: this.setVid,
+      menuOpen: open, menuClosed: !open, menuOpenStr: open ? 'true' : 'false',
+      toggleMenu: () => this.setState({ menu: !open }), closeMenu: () => this.setState({ menu: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

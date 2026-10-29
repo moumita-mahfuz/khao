@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="KHAO — যত খাবে তত চাবে। মোহাম্মদপুরের স্ন্যাক আর আড্ডার জায়গা: নাগা আলু সিঙ্গারা, ক্রিসপি চিকেন রোল, খিচুড়ি, চটপটি।">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="KHAO">
+  <link rel="apple-touch-icon" href="icons/Icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/Icon-192.png"/>
+
+  <title>KHAO — যত খাবে তত চাবে</title>
+  <link rel="canonical" href="https://khao.online/">
+
+  <!-- Link previews (Facebook, WhatsApp, Messenger, X) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="KHAO">
+  <meta property="og:url" content="https://khao.online/">
+  <meta property="og:title" content="KHAO — যত খাবে তত চাবে">
+  <meta property="og:description" content="মোহাম্মদপুরের স্ন্যাক আর আড্ডার জায়গা: নাগা আলু সিঙ্গারা, ক্রিসপি চিকেন রোল, খিচুড়ি, চটপটি।">
+  <meta property="og:image" content="https://khao.online/icons/Icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:locale" content="bn_BD">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="KHAO — যত খাবে তত চাবে">
+  <meta name="twitter:image" content="https://khao.online/icons/Icon-512.png">
+  <meta name="theme-color" content="#111111">
+  <style>
+    html,body{background:#111111;margin:0;-webkit-tap-highlight-color:transparent}
+    /* Mobile browsers outline the focused Flutter view / semantics nodes after
+       a tap (green on Samsung Internet, blue/orange elsewhere). The app draws
+       its own focus ring, so drop the browser's. */
+    flutter-view,flt-glass-pane,flt-semantics-host,flt-semantics,
+    flutter-view *:focus,flutter-view *:focus-visible,flt-semantics:focus{outline:none!important}
+    /* Loading splash until Flutter draws its first frame. */
+    #khao-splash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#111111;transition:opacity .4s ease}
+    #khao-splash img{width:128px;height:128px;animation:khao-pulse 1.4s ease-in-out infinite}
+    #khao-splash.done{opacity:0;pointer-events:none}
+    @keyframes khao-pulse{50%{transform:scale(1.06)}}
+    @media (prefers-reduced-motion:reduce){#khao-splash img{animation:none}}
+  </style>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <div id="khao-splash" aria-hidden="true"><img src="icons/logo-splash.png" alt=""></div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var s = document.getElementById('khao-splash');
+      if (!s) return;
+      s.classList.add('done');
+      setTimeout(function () { s.remove(); }, 450);
+    });
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "currency": "৳",
+  "tiers": [
+    { "id": "small",  "label": "অল্প খাও",  "short": "অল্প",  "detail": "৪ পিস + ১টি সস" },
+    { "id": "medium", "label": "বেশি খাও", "short": "বেশি", "detail": "৮ পিস + ২টি সস" },
+    { "id": "large",  "label": "অনেক খাও", "short": "অনেক", "detail": "১২ পিস + ৩টি সস" }
+  ],
+  "snacks": [
+    { "id": "singara", "name": "নাগা আলু সিঙ্গারা", "nameEn": "NAGA ALOO SINGARA", "tagline": "ঝালেই আলাদা মজা!", "prices": [60, 120, 180], "spice": 5, "image": null, "placeholderTag": "NAGA HOT" },
+    { "id": "roll", "name": "ক্রিসপি চিকেন রোল", "nameEn": "CRISPY CHICKEN ROLL", "tagline": "বাইরে ক্রিসপি, ভিতরে juicy!", "prices": [80, 160, 240], "spice": 2, "image": "assets/images/chicken-roll.jpg", "thumb": "assets/images/chicken-roll-2.jpg" },
+    { "id": "cutlet", "name": "ফিশ কাটলেট", "nameEn": "FISH CUTLET", "tagline": "সফট ভিতর, ক্রিসপি বাইরে।", "prices": [80, 160, 240], "spice": 1, "image": "assets/images/fish-cutlet.jpg" }
+  ],
+  "combo": {
+    "id": "combo", "name": "সব খাও", "carouselName": "সব খাও কম্বো",
+    "tagline": "একটাতে মন ভরে না? সবই একটু একটু খাও!",
+    "includes": ["২ পিস নাগা আলু সিঙ্গারা", "২ পিস ক্রিসপি চিকেন রোল", "২ পিস ফিশ কাটলেট", "+ ২টি সস"],
+    "price": 110, "spice": 3, "image": "assets/images/chicken-roll-2.jpg"
+  },
+  "dayparts": [
+    { "id": "lunch", "dot": "১১", "label": "দুপুর · ১১টা – ৪টা", "title": "দুপুরে পেট ভরে খাও",
+      "item": { "id": "khichuri", "name": "বিফ ঝুরা খিচুড়ি", "desc": "ঘরের বানানো আচার, পেঁয়াজ ভর্তা আর garden সালাদের সাথে। দুপুরটা জমুক এক প্লেটেই!", "price": 199, "spice": 3, "image": "assets/images/khichuri.jpg" } },
+    { "id": "evening", "dot": "৫", "label": "বিকেল · ৫টা থেকে", "title": "বিকেলের আড্ডায় খাও",
+      "item": { "id": "chotpoti", "name": "KHAO শাহী চটপটি", "desc": "আমাদের ঘরানায় বানানো, বিকেলের আড্ডার জন্য একদম ঠিকঠাক। আড্ডা থাকলে চটপটি তো লাগবেই!", "price": 99, "spice": 4, "image": "assets/images/chotpoti.jpg" } },
+    { "id": "allday", "dot": "১০", "label": "সারাদিন · রাত ১০টা পর্যন্ত", "title": "গরমে আর ঠান্ডায় চুমুক",
+      "quote": "এক কাপ হলে আরেক কাপ চাইতেই পারে!",
+      "items": [
+        { "id": "cha", "name": "দুধ চা", "price": 30, "spice": 0, "image": null, "placeholderTag": "MILK TEA" },
+        { "id": "mojito", "name": "অ্যাপল ফিজ মোহিতো", "desc": "ঠান্ডা, ফিজি, একদম ফ্রেশ!", "price": 40 },
+        { "id": "sauce-green", "name": "KHAO গ্রিন সস", "price": 10 },
+        { "id": "sauce-tamarind", "name": "তেঁতুলের টক-ঝাল-মিষ্টি সস", "price": 10 }
+      ] }
+  ],
+  "carouselOrder": ["singara", "roll", "cutlet", "combo", "khichuri", "chotpoti", "cha"],
+  "carouselStartIndex": 1,
+  "contact": {
+    "address": "[পুরো ঠিকানা], মোহাম্মদপুর, ঢাকা",
+    "hours": "প্রতিদিন সকাল ১১টা – রাত ১০টা",
+    "phone": "[ফোন নম্বর]",
+    "facebook": "[link]",
+    "instagram": "[link]",
+    "mapUrl": "[google maps link]"
+  }
+}
