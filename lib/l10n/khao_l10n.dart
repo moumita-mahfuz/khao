@@ -104,12 +104,12 @@ class KhaoStrings {
   String get taglineLine2 => _t('তত চাবে', 'crave more.');
   String get tagline => _t('যত খাবে তত চাবে', 'Eat more, crave more');
   String get heroBodyLong => _t(
-    'মোহাম্মদপুরের অলিগলিতে এবার জমবে আসল স্বাদের আড্ডা। ঝাল সিঙ্গারা, ক্রিসপি রোল, গরম খিচুড়ি আর বিকেলের চটপটি — সব এক জায়গায়।',
-    'Real flavour comes to the lanes of Mohammadpur. Fiery singara, crispy rolls, hot khichuri and evening chotpoti — all in one place.',
+    'মোহাম্মদপুরের অলিগলিতে এবার জমবে আসল স্বাদের আড্ডা। ঝাল সিঙ্গারা, ক্রিসপি রোল, মোমো, বার্গার আর বিকেলের চা — সব এক জায়গায়।',
+    'Real flavour comes to the lanes of Mohammadpur. Fiery singara, crispy rolls, momos, burgers and evening tea — all in one place.',
   );
   String get heroBodyShort => _t(
-    'মোহাম্মদপুরের অলিগলিতে এবার জমবে আসল স্বাদের আড্ডা। ঝাল সিঙ্গারা, ক্রিসপি রোল, খিচুড়ি আর চটপটি — সব এক জায়গায়।',
-    'Real flavour comes to the lanes of Mohammadpur. Fiery singara, crispy rolls, khichuri and chotpoti — all in one place.',
+    'মোহাম্মদপুরের অলিগলিতে এবার জমবে আসল স্বাদের আড্ডা। ঝাল সিঙ্গারা, ক্রিসপি রোল, মোমো আর বার্গার — সব এক জায়গায়।',
+    'Real flavour comes to the lanes of Mohammadpur. Fiery singara, crispy rolls, momos and burgers — all in one place.',
   );
   String get seeMenu => _t('মেনু দেখো', 'See menu');
   String get whereAreWe => _t('কোথায় আছি?', 'Where are we?');
@@ -162,6 +162,35 @@ class KhaoStrings {
 
   String get dayKicker => _t('সকাল ১১টা থেকে রাত ১০টা', '11 am to 10 pm');
   String get dayTitle => _t('KHAO-এর একটা দিন', 'A day at KHAO');
+
+  // ---------------------------------------------------------------- advance
+
+  String get advanceKicker => _t(
+    'অনুষ্ঠান, অফিস আর দাওয়াতের জন্য',
+    'For events, offices & get-togethers',
+  );
+  String get advanceTitle => _t('অগ্রিম অর্ডার', 'Advance Order');
+  String get advanceMinimum => _t('ন্যূনতম ৫টি', 'Minimum 5');
+  String get advanceBody => _t(
+    'আগে থেকে জানিয়ে দাও, ঘরোয়া স্বাদের ভরপেট খাবার সময়মতো রেডি থাকবে।',
+    'Let us know ahead and we\'ll have hearty, home-style plates ready on time.',
+  );
+  String get advanceCta => _t('কল করে অর্ডার করো', 'Call to order');
+  String get advancePerPlate => _t('প্রতি প্লেট', 'per plate');
+  String get advanceNotOnFoodpanda => _t(
+    'এই খাবারগুলো ফুডপান্ডায় পাওয়া যাবে না, কল করে অর্ডার করো।',
+    'These dishes aren\'t on foodpanda, so call us to order.',
+  );
+
+  // ---------------------------------------------------------------- foodpanda
+
+  String get orderOnFoodpanda =>
+      _t('ফুডপান্ডায় অর্ডার করো', 'Order on foodpanda');
+  String get foodpandaKicker => _t('ঘরে বসেই খাও', 'Eat at home');
+  String get foodpandaNote => _t(
+    'অগ্রিম অর্ডারের খাবার ছাড়া মেনুর সবকিছুই ফুডপান্ডায় পাবে।',
+    'Everything on the menu except the advance-order dishes is on foodpanda.',
+  );
 
   // ---------------------------------------------------------------- find us
 

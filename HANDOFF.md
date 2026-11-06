@@ -1,5 +1,11 @@
 # KHAO website — Design A ("Street Fire") → Flutter handoff
 
+> **Historical document.** This is the original brief. The `reference/`
+> screenshots, `data/menu.json` and the handoff folder/zips it mentions have
+> been removed from the repo (they are in git history). The live menu data is
+> `assets/data/menu.json`, and the site has moved on from this brief (new
+> menu, advance-order section, foodpanda links).
+
 One-page responsive website for **KHAO**, a snack & adda spot in Mohammadpur, Dhaka.
 Tagline: **যত খাবে তত চাবে**. Copy is Bangla-first with English accents.
 

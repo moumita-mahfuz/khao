@@ -1,7 +1,10 @@
 # KHAO web
 
 One-page responsive site for KHAO (Mohammadpur, Dhaka) — Flutter Web, built
-from `khao-flutter-handoff/` (Design A, "Street Fire"). Breakpoint: 860px.
+from the original design handoff (Design A, "Street Fire"; see `HANDOFF.md`).
+Breakpoint: 860px. The handoff copy, its zips and the `reference/` design
+screenshots were removed to keep the repo small; they remain in git history
+(before the commit that removed them).
 
 ```sh
 flutter run -d chrome

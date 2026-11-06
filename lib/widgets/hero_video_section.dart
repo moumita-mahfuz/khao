@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../data/links.dart';
 import '../l10n/khao_l10n.dart';
 import '../models/sections.dart';
 import '../pages/menu_pdf_page.dart';
@@ -13,7 +14,11 @@ import 'common.dart';
 
 /// Section 1: full-bleed looping video with headline, nav and badge.
 class HeroVideoSection extends StatefulWidget {
-  const HeroVideoSection({super.key, required this.onNavigate});
+  const HeroVideoSection({
+    super.key,
+    required this.onNavigate,
+    this.foodpandaUrl,
+  });
 
   static const desktopHeight = 900.0;
   static const mobileHeight = 760.0;
@@ -25,6 +30,9 @@ class HeroVideoSection extends StatefulWidget {
       MediaQuery.paddingOf(context).top;
 
   final SectionNavigator onNavigate;
+
+  /// Shows an "order on foodpanda" button when set.
+  final String? foodpandaUrl;
 
   @override
   State<HeroVideoSection> createState() => _HeroVideoSectionState();
@@ -55,7 +63,7 @@ class _HeroVideoSectionState extends State<HeroVideoSection> {
   ) => [
     (t.navMenu, KhaoIcons.menuBook, _openMenuPage),
     (t.navQuickBites, KhaoIcons.snackBox, () => _go(KhaoSection.menu)),
-    (t.dayTitle, KhaoIcons.calendar, () => _go(KhaoSection.daypart)),
+    (t.advanceTitle, KhaoIcons.calendar, () => _go(KhaoSection.advance)),
     (t.navFindUs, KhaoIcons.pin, () => _go(KhaoSection.visit)),
   ];
 
@@ -74,7 +82,11 @@ class _HeroVideoSectionState extends State<HeroVideoSection> {
             left: desktop ? 56 : 16,
             right: desktop ? 56 : 16,
             bottom: desktop ? 72 : 48,
-            child: _HeroContent(desktop: desktop, onNavigate: _go),
+            child: _HeroContent(
+              desktop: desktop,
+              onNavigate: _go,
+              foodpandaUrl: widget.foodpandaUrl,
+            ),
           ),
           Positioned(
             top: topInset,
@@ -546,10 +558,15 @@ class _DropdownCard extends StatelessWidget {
 // ---------------------------------------------------------------- content
 
 class _HeroContent extends StatelessWidget {
-  const _HeroContent({required this.desktop, required this.onNavigate});
+  const _HeroContent({
+    required this.desktop,
+    required this.onNavigate,
+    this.foodpandaUrl,
+  });
 
   final bool desktop;
   final SectionNavigator onNavigate;
+  final String? foodpandaUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -638,10 +655,24 @@ class _HeroContent extends StatelessWidget {
       ),
     );
 
+    final url = foodpandaUrl;
+    final orderBtn = url == null
+        ? null
+        : PillButton(
+            label: context.tr.orderOnFoodpanda,
+            background: KhaoColors.foodpanda,
+            foreground: Colors.white,
+            height: desktop ? 56 : 54,
+            expand: !desktop,
+            trailing: KhaoIcons.arrowRight(18, Colors.white),
+            onTap: () => KhaoLinks.open(context, url),
+          );
     final menuBtn = PillButton(
       label: context.tr.seeMenu,
       background: KhaoColors.orange,
       height: desktop ? 56 : 54,
+      // Narrower padding on phones, where it shares a row.
+      horizontalPadding: desktop ? 32 : 10,
       expand: !desktop,
       onTap: () => MenuPdfPage.open(context),
     );
@@ -650,6 +681,7 @@ class _HeroContent extends StatelessWidget {
       foreground: KhaoColors.cream,
       borderColor: KhaoColors.cream,
       height: desktop ? 56 : 54,
+      horizontalPadding: desktop ? 32 : 10,
       expand: !desktop,
       onTap: () => onNavigate(KhaoSection.visit),
     );
@@ -694,11 +726,24 @@ class _HeroContent extends StatelessWidget {
                 ? Wrap(
                     spacing: 14,
                     runSpacing: 14,
-                    children: [menuBtn, whereBtn],
+                    children: [menuBtn, whereBtn, ?orderBtn],
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [menuBtn, const SizedBox(height: 10), whereBtn],
+                    children: [
+                      // Menu and "where are we" share a row; foodpanda last.
+                      Row(
+                        children: [
+                          Expanded(child: menuBtn),
+                          const SizedBox(width: 10),
+                          Expanded(child: whereBtn),
+                        ],
+                      ),
+                      if (orderBtn != null) ...[
+                        const SizedBox(height: 10),
+                        orderBtn,
+                      ],
+                    ],
                   ),
             800.ms,
           ),

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../data/links.dart';
 import '../l10n/khao_l10n.dart';
 import '../models/menu_models.dart';
 import '../theme/khao_theme.dart';
@@ -90,8 +91,25 @@ class MenuSection extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: desktop ? 28 : 18),
+              // Desktop only: on phones the board below already lists these
+              // (with their 🔥), so the big cards are skipped.
+              if (desktop && menu.signatureItems.isNotEmpty) ...[
+                // Room for the photos that overhang the card tops.
+                const SizedBox(height: 140),
+                _SignatureSpotlight(items: menu.signatureItems),
+                const SizedBox(height: 56),
+              ] else
+                SizedBox(height: desktop ? 28 : 18),
               _CategoryGrid(categories: menu.categoryItems),
+            ],
+            if (menu.contact.foodpanda != null) ...[
+              SizedBox(height: desktop ? 56 : 36),
+              RevealOnScroll(
+                child: _FoodpandaStrip(
+                  url: menu.contact.foodpanda!,
+                  desktop: desktop,
+                ),
+              ),
             ],
           ],
         ),
@@ -232,16 +250,19 @@ class _DesktopTable extends StatelessWidget {
 
   final KhaoMenu menu;
 
-  static const _pad = EdgeInsets.symmetric(horizontal: 32, vertical: 22);
+  static const _pad = EdgeInsets.symmetric(horizontal: 28, vertical: 14);
+
+  /// Snack rows: tighter than the header so the table stays compact.
+  static const _rowPad = EdgeInsets.symmetric(horizontal: 28, vertical: 12);
 
   /// Below this width the sauce panel drops under the snack rows instead of
   /// sitting beside them, so the price columns keep their room.
   static const sideBySideMin = 1100.0;
 
-  /// CSS grid: 120px | 2fr | 1fr 1fr 1fr, gap 16.
+  /// Grid: 76px thumb | 2fr | 1fr 1fr 1fr, gap 16.
   static Widget gridRow(List<Widget> cells) => Row(
     children: [
-      SizedBox(width: 120, child: cells[0]),
+      SizedBox(width: 76, child: cells[0]),
       const SizedBox(width: 16),
       Expanded(flex: 2, child: cells[1]),
       for (final c in cells.skip(2)) ...[
@@ -263,7 +284,7 @@ class _DesktopTable extends StatelessWidget {
         const SizedBox(),
         Text(
           context.tr.item,
-          style: KhaoText.anek(20, color: KhaoColors.black),
+          style: KhaoText.anek(18, color: KhaoColors.black),
         ),
         for (final (i, t) in menu.tiers.indexed)
           Column(
@@ -517,23 +538,23 @@ class _TableRowState extends State<_TableRow> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: _DesktopTable._pad,
+              padding: _DesktopTable._rowPad,
               child: _DesktopTable.gridRow([
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: _Thumb(item: item, size: 96, hovered: hovered),
+                  child: _Thumb(item: item, size: 64, hovered: hovered),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       item.name,
-                      style: KhaoText.anek(28, color: KhaoColors.black),
+                      style: KhaoText.anek(22, color: KhaoColors.black),
                     ),
                     if (item.tagline != null)
                       Text(
                         item.tagline!,
-                        style: KhaoText.hind(16, color: KhaoColors.richBrown),
+                        style: KhaoText.hind(14, color: KhaoColors.richBrown),
                       ),
                   ],
                 ),
@@ -542,7 +563,7 @@ class _TableRowState extends State<_TableRow> {
                     context.tr.taka(p),
                     textAlign: TextAlign.center,
                     style: KhaoText.anek(
-                      30,
+                      24,
                       weight: FontWeight.w800,
                       color: KhaoColors.black,
                     ),
@@ -1175,10 +1196,7 @@ class _SauceTile extends StatelessWidget {
             ),
 
             // SizedBox(height: compact ? 12 : 16),
-            _BrushLabel(
-              text: context.tr.taka(item.price),
-              fontSize: priceSize,
-            ),
+            _BrushLabel(text: context.tr.taka(item.price), fontSize: priceSize),
           ],
         ),
       ),
@@ -1336,134 +1354,553 @@ class _SauceCallout extends StatelessWidget {
 
 // ---------------------------------------------------------------- categories
 
-/// Drinks, lunch, evening and sauces: one cream card per category,
-/// 2 columns on desktop and tablets, 1 on phones.
+/// Momos, burgers, drinks…: one cream menu board with the categories laid
+/// out in balanced columns (3 on desktop, 2 on tablets, 1 on phones).
 class _CategoryGrid extends StatelessWidget {
   const _CategoryGrid({required this.categories});
 
-  final List<(String, List<MenuItem>)> categories;
+  final List<(String, List<MenuItem>, String?)> categories;
+
+  static const _headerColors = [
+    KhaoColors.yellow,
+    KhaoColors.orange,
+    KhaoColors.red,
+  ];
+
+  /// Splits [categories] (in order) into [cols] runs so the tallest column
+  /// is as short as possible. A title counts as 1.5 rows.
+  static List<List<int>> _partition(
+    List<(String, List<MenuItem>, String?)> categories,
+    int cols,
+  ) {
+    final n = categories.length;
+    final w = [for (final c in categories) 1.5 + c.$2.length];
+    cols = cols.clamp(1, n);
+    List<List<int>>? best;
+    var bestMax = double.infinity;
+    // n is tiny (a handful of categories), so try every split.
+    void search(int start, int left, List<List<int>> acc) {
+      if (left == 1) {
+        final cand = [
+          ...acc,
+          [for (var i = start; i < n; i++) i],
+        ];
+        final mx = cand
+            .map((c) => c.fold<double>(0, (s, i) => s + w[i]))
+            .reduce((a, b) => a > b ? a : b);
+        if (mx < bestMax) {
+          bestMax = mx;
+          best = cand;
+        }
+        return;
+      }
+      for (var end = start + 1; end <= n - left + 1; end++) {
+        search(end, left - 1, [
+          ...acc,
+          [for (var i = start; i < end; i++) i],
+        ]);
+      }
+    }
+
+    search(0, cols, []);
+    return best!;
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (categories.isEmpty) return const SizedBox.shrink();
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
-        final cols = w >= 560 ? 2 : 1;
-        final gap = cols == 1 ? 14.0 : 20.0;
-        final rows = <Widget>[];
-        for (var r = 0; r < categories.length; r += cols) {
-          if (r > 0) rows.add(SizedBox(height: gap));
-          // Top-aligned rather than IntrinsicHeight + stretch, which can
-          // mis-measure text on web and overflow (see the combo band).
-          rows.add(
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (var c = 0; c < cols; c++) ...[
-                  if (c > 0) SizedBox(width: gap),
-                  Expanded(
-                    child: r + c < categories.length
-                        ? RevealOnScroll(
-                            delay: Duration(milliseconds: 100 * c),
-                            child: _CategoryCard(
-                              title: categories[r + c].$1,
-                              items: categories[r + c].$2,
-                              compact: cols == 1,
-                            ),
-                          )
-                        : const SizedBox(),
-                  ),
+        final cols = w >= 1000 ? 3 : (w >= 600 ? 2 : 1);
+        final compact = cols == 1;
+        // Column width from the board padding + border and the 57px divider
+        // gutters, so rows don't need their own LayoutBuilder.
+        final inner = w - (compact ? 20 : 36) * 2 - 4;
+        final colWidth = (inner - (cols - 1) * 57) / cols;
+
+        Widget block(int i) => _CategoryBlock(
+          title: categories[i].$1,
+          items: categories[i].$2,
+          note: categories[i].$3,
+          color: _headerColors[i % 3],
+          compact: compact,
+          width: colWidth,
+        );
+
+        final Widget content;
+        if (compact) {
+          content = Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < categories.length; i++) ...[
+                if (i > 0) ...[
+                  const SizedBox(height: 22),
+                  const DashedLine(color: KhaoColors.dashedBeige),
+                  const SizedBox(height: 22),
                 ],
+                block(i),
               ],
-            ),
+            ],
+          );
+        } else {
+          final columns = _partition(categories, cols);
+          // Dividers are overlaid at known x positions so they span the
+          // tallest column without IntrinsicHeight (which breaks here).
+          content = Stack(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final (ci, col) in columns.indexed) ...[
+                    if (ci > 0) const SizedBox(width: 57),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          for (final (k, i) in col.indexed) ...[
+                            if (k > 0) const SizedBox(height: 36),
+                            block(i),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              for (var ci = 1; ci < columns.length; ci++)
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: ci * colWidth + (ci - 1) * 57 + 28,
+                  child: const DashedLine(
+                    color: KhaoColors.dashedBeige,
+                    axis: Axis.vertical,
+                  ),
+                ),
+            ],
           );
         }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: rows,
+
+        return RevealOnScroll(
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: compact ? 20 : 36,
+              vertical: compact ? 26 : 40,
+            ),
+            decoration: BoxDecoration(
+              color: KhaoColors.cream,
+              borderRadius: BorderRadius.circular(compact ? 22 : 28),
+              border: Border.all(color: KhaoColors.black, width: 2),
+            ),
+            child: content,
+          ),
         );
       },
     );
   }
 }
 
-class _CategoryCard extends StatelessWidget {
-  const _CategoryCard({
+/// One category: a coloured label, then name · · · price rows.
+class _CategoryBlock extends StatelessWidget {
+  const _CategoryBlock({
     required this.title,
     required this.items,
+    required this.color,
     required this.compact,
+    required this.width,
+    this.note,
   });
 
   final String title;
   final List<MenuItem> items;
+  final Color color;
   final bool compact;
+  final String? note;
+
+  /// Column width; long names wrap at 72% of it.
+  final double width;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(compact ? 18 : 24),
-      decoration: BoxDecoration(
-        color: KhaoColors.cream,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: KhaoColors.black, width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Semantics(
-            header: true,
-            child: Text(
-              title,
-              style: KhaoText.anek(
-                compact ? 22 : 26,
-                weight: FontWeight.w800,
-                color: KhaoColors.black,
-                height: 1.2,
+    final onColor = color == KhaoColors.red ? Colors.white : KhaoColors.black;
+    final nameStyle = KhaoText.anek(
+      compact ? 17 : 18,
+      weight: FontWeight.w600,
+      color: KhaoColors.black,
+      height: 1.35,
+    );
+    final priceStyle = KhaoText.anek(
+      compact ? 18 : 19,
+      weight: FontWeight.w800,
+      color: KhaoColors.darkRed,
+      height: 1.35,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Semantics(
+              header: true,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(14, 5, 14, 3),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  title,
+                  style: KhaoText.anek(
+                    compact ? 19 : 21,
+                    weight: FontWeight.w800,
+                    color: onColor,
+                    height: 1.3,
+                  ),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 12),
-          const DashedLine(color: KhaoColors.dashedBeige),
-          for (final (i, it) in items.indexed) ...[
-            SizedBox(height: i == 0 ? 14 : 16),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    it.name,
-                    style: KhaoText.anek(
-                      compact ? 19 : 21,
-                      weight: FontWeight.w600,
-                      color: KhaoColors.black,
-                      height: 1.3,
-                    ),
+            // Applies to every item below ("প্রতি প্লেট ৬ পিস").
+            if (note != null) ...[
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  note!,
+                  textAlign: TextAlign.end,
+                  style: KhaoText.hind(
+                    compact ? 13 : 14,
+                    weight: FontWeight.w500,
+                    color: KhaoColors.richBrown,
                   ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  context.tr.taka(it.price),
-                  style: KhaoText.anek(
-                    compact ? 21 : 24,
-                    weight: FontWeight.w800,
-                    color: KhaoColors.darkRed,
-                    height: 1.2,
-                  ),
-                ),
-              ],
-            ),
-            if ((it.desc ?? it.tagline) != null) ...[
-              const SizedBox(height: 4),
-              Text(
-                (it.desc ?? it.tagline)!,
-                style: KhaoText.hind(
-                  compact ? 14 : 15,
-                  height: 1.5,
-                  color: KhaoColors.richBrown,
                 ),
               ),
             ],
           ],
+        ),
+        SizedBox(height: compact ? 12 : 16),
+        for (final (i, it) in items.indexed) ...[
+          if (i > 0) SizedBox(height: compact ? 10 : 12),
+          _row(context, it, nameStyle, priceStyle, nameMaxWidth: width * 0.72),
+        ],
+      ],
+    );
+  }
+
+  Widget _row(
+    BuildContext context,
+    MenuItem it,
+    TextStyle nameStyle,
+    TextStyle priceStyle, {
+    required double nameMaxWidth,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (it.signature) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: KhaoIcons.flame(compact ? 15 : 16, KhaoColors.red),
+          ),
+          const SizedBox(width: 6),
+        ],
+        // Natural width, but long names wrap before squeezing out
+        // the leader and price.
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: nameMaxWidth),
+          child: Text(it.name, style: nameStyle),
+        ),
+        // Dotted leader from the name to the price.
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 7),
+            child: DashedLine(
+              color: KhaoColors.black.withValues(alpha: 0.3),
+              thickness: 1.5,
+              dash: 1.5,
+              gap: 4,
+            ),
+          ),
+        ),
+        Text(context.tr.taka(it.price), style: priceStyle),
+      ],
+    );
+  }
+}
+
+// ---------------------------------------------------------------- foodpanda
+
+/// "Eat at home" call-to-action under the menu: everything except the
+/// advance-order dishes can be ordered on foodpanda.
+class _FoodpandaStrip extends StatelessWidget {
+  const _FoodpandaStrip({required this.url, required this.desktop});
+
+  final String url;
+  final bool desktop;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tr;
+    final button = PillButton(
+      label: t.orderOnFoodpanda,
+      background: KhaoColors.foodpanda,
+      foreground: Colors.white,
+      horizontalPadding: 30,
+      expand: !desktop,
+      trailing: KhaoIcons.arrowRight(18, Colors.white),
+      onTap: () => KhaoLinks.open(context, url),
+    );
+    final text = Column(
+      crossAxisAlignment: desktop
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
+      children: [
+        Text(
+          t.foodpandaKicker,
+          textAlign: desktop ? TextAlign.start : TextAlign.center,
+          style: KhaoText.galada(desktop ? 30 : 26, color: KhaoColors.yellow),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          t.foodpandaNote,
+          textAlign: desktop ? TextAlign.start : TextAlign.center,
+          style: KhaoText.hind(
+            desktop ? 17 : 15,
+            height: 1.6,
+            color: KhaoColors.cream.withValues(alpha: 0.85),
+          ),
+        ),
+      ],
+    );
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: desktop ? 36 : 20,
+        vertical: desktop ? 28 : 24,
+      ),
+      decoration: BoxDecoration(
+        color: KhaoColors.surfaceDark,
+        borderRadius: BorderRadius.circular(desktop ? 28 : 22),
+        border: Border.all(
+          color: KhaoColors.cream.withValues(alpha: 0.18),
+          width: 1.5,
+        ),
+      ),
+      child: desktop
+          ? Row(
+              children: [
+                Expanded(child: text),
+                const SizedBox(width: 32),
+                button,
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [text, const SizedBox(height: 18), button],
+            ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------- signatures
+
+/// The 🔥 dishes as three cards, each with a round photo overhanging its
+/// top; the middle one is lifted, yellow and arched. Side by side on wide
+/// screens, stacked on phones.
+class _SignatureSpotlight extends StatelessWidget {
+  const _SignatureSpotlight({required this.items});
+
+  final List<MenuItem> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, c) {
+        final row = c.maxWidth >= 720;
+        final highlight = items.length == 1 ? 0 : items.length ~/ 2;
+        final photo = row ? (c.maxWidth >= 1000 ? 200.0 : 160.0) : 150.0;
+        Widget card(int i) => RevealOnScroll(
+          delay: Duration(milliseconds: row ? 100 * i : 0),
+          child: _SignatureCard(
+            item: items[i],
+            active: i == highlight,
+            photo: photo,
+            // Lifted only when sitting beside the others.
+            lift: row && i == highlight,
+          ),
+        );
+
+        if (row) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              for (var i = 0; i < items.length; i++) ...[
+                if (i > 0) const SizedBox(width: 24),
+                Expanded(child: card(i)),
+              ],
+            ],
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < items.length; i++) ...[
+              if (i > 0) SizedBox(height: photo / 2 + 28),
+              card(i),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SignatureCard extends StatefulWidget {
+  const _SignatureCard({
+    required this.item,
+    required this.active,
+    required this.photo,
+    required this.lift,
+  });
+
+  final MenuItem item;
+  final bool active;
+  final double photo;
+  final bool lift;
+
+  @override
+  State<_SignatureCard> createState() => _SignatureCardState();
+}
+
+class _SignatureCardState extends State<_SignatureCard> {
+  bool _hover = false;
+
+  /// "KHAO SIGNATURE MOMO" -> "MOMO": the kind of dish, for the pill.
+  String get _kind {
+    final en = widget.item.nameEn ?? widget.item.placeholderTag ?? '';
+    final parts = en.trim().split(RegExp(r'\s+'));
+    return parts.isEmpty ? '' : parts.last;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final it = widget.item;
+    final size = widget.photo;
+    final reduced = KhaoMotion.reduced(context);
+    final radius = widget.active
+        ? BorderRadius.only(
+            topLeft: Radius.circular(size * 0.8),
+            topRight: Radius.circular(size * 0.8),
+            bottomLeft: const Radius.circular(28),
+            bottomRight: const Radius.circular(28),
+          )
+        : BorderRadius.circular(28);
+
+    final photo = AnimatedScale(
+      scale: _hover && !reduced ? 1.06 : 1,
+      duration: const Duration(milliseconds: 600),
+      curve: KhaoMotion.ease,
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: KhaoColors.black, width: 3),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.35),
+              offset: const Offset(0, 10),
+              blurRadius: 24,
+            ),
+          ],
+        ),
+        child: ClipOval(
+          child: it.image != null
+              ? Image.asset(
+                  it.image!,
+                  fit: BoxFit.cover,
+                  semanticLabel: it.name,
+                )
+              : PhotoPlaceholder(
+                  tag: it.placeholderTag ?? it.nameEn ?? '',
+                  tagSize: size * 0.17,
+                ),
+        ),
+      ),
+    );
+
+    final body = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: size / 2 + 16),
+        if (_kind.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.fromLTRB(12, 3, 12, 1),
+            decoration: BoxDecoration(
+              color: KhaoColors.black,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: LatinText(
+              _kind,
+              size: 17,
+              letterSpacing: 1,
+              color: KhaoColors.yellow,
+            ),
+          ),
+        const SizedBox(height: 10),
+        // Two lines' room for every name, so cards match in height and
+        // their pills, names and prices line up across the row.
+        SizedBox(
+          // 2 lines × 22px × 1.25 line height, plus rounding slack.
+          height: 22 * 1.25 * 2 + 2,
+          child: Center(
+            child: Text(
+              it.name,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: KhaoText.anek(
+                22,
+                weight: FontWeight.w800,
+                color: KhaoColors.black,
+                height: 1.25,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          context.tr.taka(it.price),
+          style: KhaoText.anek(
+            30,
+            weight: FontWeight.w800,
+            color: KhaoColors.darkRed,
+            height: 1.2,
+          ),
+        ),
+      ],
+    );
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+            width: double.infinity,
+            // The lifted card grows upward (taller top), so every card's
+            // bottom stays on the same line.
+            padding: EdgeInsets.fromLTRB(20, widget.lift ? 24 : 0, 20, 26),
+            decoration: BoxDecoration(
+              color: widget.active ? KhaoColors.yellow : KhaoColors.cream,
+              borderRadius: radius,
+              border: Border.all(color: KhaoColors.black, width: 2),
+            ),
+            child: body,
+          ),
+          Positioned(top: -size / 2, child: photo),
         ],
       ),
     );

@@ -80,6 +80,7 @@ class MenuItem {
     this.thumb,
     this.placeholderTag,
     this.color,
+    this.signature = false,
   });
 
   factory MenuItem.fromJson(Map<String, dynamic> j, KhaoLang lang) => MenuItem(
@@ -98,6 +99,7 @@ class MenuItem {
     thumb: j['thumb'] as String?,
     placeholderTag: j['placeholderTag'] as String?,
     color: _color(j['color']),
+    signature: (j['signature'] as bool?) ?? false,
   );
 
   final String id;
@@ -123,6 +125,9 @@ class MenuItem {
 
   /// Accent colour as 0xAARRGGBB (sauce bowls), from "#RRGGBB" in the JSON.
   final int? color;
+
+  /// KHAO signature dish (marked with a flame on the printed menu).
+  final bool signature;
 
   bool get hasTiers => prices.length > 1;
   int get fromPrice => prices.first;
@@ -237,6 +242,7 @@ class Contact {
     required this.mapUrl,
     this.instagramHandle,
     this.website,
+    this.foodpanda,
   });
 
   factory Contact.fromJson(Map<String, dynamic> j, KhaoLang lang) => Contact(
@@ -248,6 +254,7 @@ class Contact {
     instagramHandle: j['instagramHandle'] as String?,
     website: j['website'] as String?,
     mapUrl: j['mapUrl'] as String,
+    foodpanda: j['foodpanda'] as String?,
   );
 
   final String address;
@@ -265,6 +272,9 @@ class Contact {
   final String? website;
   final String mapUrl;
 
+  /// foodpanda store link (everything except advance-order dishes).
+  final String? foodpanda;
+
   /// Placeholders look like "[link]"; they are not launchable yet.
   static bool isPlaceholder(String v) => v.trim().startsWith('[');
 }
@@ -273,16 +283,21 @@ class Contact {
 /// card in the menu section. Items are referenced by id so prices live in
 /// one place.
 class MenuCategory {
-  const MenuCategory({required this.title, required this.itemIds});
+  const MenuCategory({required this.title, required this.itemIds, this.note});
 
   factory MenuCategory.fromJson(Map<String, dynamic> j, KhaoLang lang) =>
       MenuCategory(
         title: _req(j['title'], lang),
         itemIds: (j['items'] as List).cast<String>(),
+        note: _text(j['note'], lang),
       );
 
   final String title;
   final List<String> itemIds;
+
+  /// Small note beside the label that applies to every item, e.g.
+  /// "প্রতি প্লেট ৬ পিস", so it isn't repeated on each name.
+  final String? note;
 }
 
 class KhaoMenu {
@@ -293,8 +308,11 @@ class KhaoMenu {
     required this.snacks,
     required this.combo,
     required this.dayparts,
+    this.extras = const [],
     this.categories = const [],
     this.sauceIds = const [],
+    this.advanceOrderIds = const [],
+    this.advanceGallery = const [],
     required this.carouselOrder,
     required this.tickerOrder,
     required this.carouselStartIndex,
@@ -323,11 +341,18 @@ class KhaoMenu {
         for (final d in j['dayparts'] as List)
           Daypart.fromJson(d as Map<String, dynamic>, lang),
       ],
+      extras: [
+        for (final i in (j['items'] as List?) ?? const [])
+          MenuItem.fromJson(i as Map<String, dynamic>, lang),
+      ],
       categories: [
         for (final c in (j['menuCategories'] as List?) ?? const [])
           MenuCategory.fromJson(c as Map<String, dynamic>, lang),
       ],
       sauceIds: (j['sauces'] as List?)?.cast<String>() ?? const [],
+      advanceOrderIds: (j['advanceOrder'] as List?)?.cast<String>() ?? const [],
+      advanceGallery:
+          (j['advanceGallery'] as List?)?.cast<String>() ?? const [],
       carouselOrder: carouselOrder,
       tickerOrder: (j['tickerOrder'] as List?)?.cast<String>() ?? carouselOrder,
       carouselStartIndex: (j['carouselStartIndex'] as int?) ?? 0,
@@ -341,16 +366,25 @@ class KhaoMenu {
   final List<MenuItem> snacks;
   final Combo combo;
   final List<Daypart> dayparts;
+
+  /// Items shown only in menu categories (momos, burgers, advance order…).
+  final List<MenuItem> extras;
   final List<MenuCategory> categories;
 
   /// Extra sauces shown beside the snack table.
   final List<String> sauceIds;
+
+  /// Dishes taken by advance order only (minimum 5), in display order.
+  final List<String> advanceOrderIds;
+
+  /// Photos for the advance-order slideshow, in order.
+  final List<String> advanceGallery;
   final List<String> carouselOrder;
   final List<String> tickerOrder;
   final int carouselStartIndex;
   final Contact contact;
 
-  /// Every item by id (snacks, combo, daypart dishes, drinks).
+  /// Every item by id (snacks, combo, daypart dishes, drinks, extras).
   Map<String, MenuItem> get byId => {
     for (final s in snacks) s.id: s,
     combo.item.id: combo.item,
@@ -358,10 +392,12 @@ class KhaoMenu {
       if (d.item != null) d.item!.id: d.item!,
       for (final i in d.items) i.id: i,
     },
+    for (final e in extras) e.id: e,
   };
 
-  /// Categories with their ids resolved; unknown ids are skipped.
-  List<(String, List<MenuItem>)> get categoryItems {
+  /// Categories as (title, items, note) with ids resolved; unknown ids are
+  /// skipped.
+  List<(String, List<MenuItem>, String?)> get categoryItems {
     final m = byId;
     return [
       for (final c in categories)
@@ -371,7 +407,22 @@ class KhaoMenu {
             for (final id in c.itemIds)
               if (m[id] != null) m[id]!,
           ],
+          c.note,
         ),
+    ];
+  }
+
+  /// Items flagged `"signature": true`, in menu order (the 🔥 dishes).
+  List<MenuItem> get signatureItems => [
+    for (final i in byId.values)
+      if (i.signature) i,
+  ];
+
+  List<MenuItem> get advanceOrderItems {
+    final m = byId;
+    return [
+      for (final id in advanceOrderIds)
+        if (m[id] != null) m[id]!,
     ];
   }
 
@@ -384,7 +435,7 @@ class KhaoMenu {
   }
 
   /// [d]'s quick bites as (name, smallest-tier detail, price), e.g.
-  /// ("নাগা সিঙ্গারা", "৪ পিস + ১টি সস", 60). Unknown ids are skipped.
+  /// ("সিঙ্গারা", "৪ পিস + ১টি সস", 60). Unknown ids are skipped.
   List<(String, String, int)> quickBitesFor(Daypart d) {
     final m = byId;
     final detail = tiers.isEmpty ? '' : tiers.first.detail;

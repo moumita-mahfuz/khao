@@ -56,6 +56,21 @@ class FindUsSection extends StatelessWidget {
       ),
     );
 
+    final fp = contact.foodpanda;
+    final foodpandaBtn = fp == null
+        ? null
+        : PillButton(
+            label: context.tr.orderOnFoodpanda,
+            background: KhaoColors.foodpanda,
+            foreground: Colors.white,
+            height: desktop ? 56 : 54,
+            fontSize: desktop ? 18 : 17,
+            horizontalPadding: desktop ? 30 : 12,
+            expand: !desktop,
+            trailing: KhaoIcons.arrowRight(18, Colors.white),
+            onTap: () => KhaoLinks.open(context, fp),
+          );
+
     final info = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -82,14 +97,21 @@ class FindUsSection extends StatelessWidget {
         _DefinitionList(contact: contact, desktop: desktop),
         SizedBox(height: desktop ? 36 : 28),
         if (desktop)
-          PillButton(
-            label: context.tr.viewOnMap,
-            background: KhaoColors.yellow,
-            horizontalPadding: 30,
-            trailing: KhaoIcons.arrowRight(18, KhaoColors.black),
-            onTap: () => KhaoLinks.open(context, contact.mapUrl),
+          Wrap(
+            spacing: 14,
+            runSpacing: 14,
+            children: [
+              PillButton(
+                label: context.tr.viewOnMap,
+                background: KhaoColors.yellow,
+                horizontalPadding: 30,
+                trailing: KhaoIcons.arrowRight(18, KhaoColors.black),
+                onTap: () => KhaoLinks.open(context, contact.mapUrl),
+              ),
+              ?foodpandaBtn,
+            ],
           )
-        else
+        else ...[
           Row(
             children: [
               Expanded(
@@ -120,6 +142,11 @@ class FindUsSection extends StatelessWidget {
               ),
             ],
           ),
+          if (foodpandaBtn != null) ...[
+            const SizedBox(height: 10),
+            foodpandaBtn,
+          ],
+        ],
       ],
     );
 
@@ -183,7 +210,7 @@ class _DefinitionList extends StatelessWidget {
         ),
       ],
     );
-    final website = contact.website;
+    // foodpanda has its own button below, so it isn't repeated here.
     final entries = <(String, Widget)>[
       (context.tr.address, Text(contact.address, style: ddStyle)),
       (context.tr.hours, Text(contact.hours, style: ddStyle)),
@@ -196,15 +223,6 @@ class _DefinitionList extends StatelessWidget {
         ),
       ),
       (context.tr.follow(long: desktop), social),
-      if (website != null)
-        (
-          context.tr.website(long: desktop),
-          _TextLink(
-            label: website,
-            style: linkStyle,
-            onTap: () => KhaoLinks.open(context, website),
-          ),
-        ),
     ];
     final dtStyle = KhaoText.anek(desktop ? 18 : 17, color: KhaoColors.yellow);
 

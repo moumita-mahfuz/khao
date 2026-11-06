@@ -344,7 +344,7 @@ class _PriceListCard extends StatelessWidget {
 
   final Daypart daypart;
 
-  /// (name, tier detail, price) rows, e.g. "নাগা সিঙ্গারা (৪ পিস + ১টি সস)".
+  /// (name, tier detail, price) rows, e.g. "সিঙ্গারা (৪ পিস + ১টি সস)".
   final List<(String, String, int)> quickBites;
   final bool desktop;
 

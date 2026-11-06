@@ -22,20 +22,44 @@ void main() {
     final menu = await MenuRepository().load();
     expect(menu.tiers.map((t) => t.short), ['অল্প', 'বেশি', 'অনেক']);
     expect(menu.tiers.first.pieces, '৪ পিস');
-    expect(menu.snacks, hasLength(3));
-    expect(menu.snacks[1].thumbImage, 'assets/images/chicken-roll-2.jpg');
-    expect(menu.combo.price, 120);
+    expect(menu.snacks, hasLength(4));
+    expect(menu.snacks[1].thumbImage, 'assets/images/snack-roll.jpg');
+    expect(menu.combo.price, 160);
     expect(menu.combo.item.name, 'সব একসাথে খাও');
-    expect(menu.combo.includesJoined.last, '১টি সস');
+    expect(menu.combo.includesJoined.last, '১টি গ্রিন সস / তেঁতুলের সস');
     expect(menu.carouselItems.map((i) => i.id), menu.carouselOrder);
     expect(menu.carouselItems[menu.carouselStartIndex].id, 'roll');
     expect(menu.dayparts.last.isPriceList, isTrue);
-    expect(menu.categoryItems, hasLength(4));
+    expect(menu.categoryItems, hasLength(5));
+    expect(menu.advanceOrderItems.map((i) => i.price), [
+      200,
+      170,
+      230,
+      250,
+      260,
+      170,
+    ]);
+    // Every category id resolves to an item.
+    for (final c in menu.categories) {
+      for (final id in c.itemIds) {
+        expect(menu.byId, contains(id));
+      }
+    }
+    for (final id in menu.advanceOrderIds) {
+      expect(menu.byId, contains(id));
+    }
+    expect(menu.byId['momo-signature']!.price, 200);
+    expect(menu.byId['burger-bbq']!.price, 210);
+    expect(menu.signatureItems.map((i) => i.id), [
+      'momo-signature',
+      'burger-bbq',
+      'bunbahar',
+    ]);
     expect(menu.sauces.map((i) => i.price), [10, 10]);
     expect(menu.sauces.every((i) => i.color != null), isTrue);
     expect(menu.contact.phone, '01817988622');
     expect(menu.contact.website, 'khao.online');
-    expect(menu.tickerLabels.first, 'নাগা সিঙ্গারা');
+    expect(menu.tickerLabels.first, 'সিঙ্গারা');
   });
 
   test('English menu: same prices, English text', () async {

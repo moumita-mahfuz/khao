@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:khao_web/data/menu_repository.dart';
 import 'package:khao_web/l10n/khao_l10n.dart';
+import 'package:khao_web/widgets/advance_order_section.dart';
 import 'package:khao_web/widgets/day_timeline.dart';
 import 'package:khao_web/widgets/find_us_section.dart';
 import 'package:khao_web/widgets/khao_footer.dart';
@@ -47,6 +48,7 @@ void main() {
                         SignatureSection(menu: menu, onNavigate: (_) {}),
                         MenuSection(menu: menu),
                         DayTimelineSection(menu: menu),
+                        AdvanceOrderSection(menu: menu),
                         FindUsSection(contact: menu.contact),
                         KhaoFooter(contact: menu.contact),
                       ],

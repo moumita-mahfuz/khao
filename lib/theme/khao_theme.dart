@@ -16,6 +16,9 @@ abstract final class KhaoColors {
   static const dashedBeige = Color(0xFFC9B48F);
   static const rowHover = Color(0xFFFFE9B0);
   static const bodyOnCream = Color(0xFF333333);
+
+  /// foodpanda pink, only for "order on foodpanda" buttons.
+  static const foodpanda = Color(0xFFD70F64);
 }
 
 /// Layout constants shared by every section.

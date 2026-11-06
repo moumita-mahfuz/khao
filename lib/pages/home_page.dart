@@ -7,6 +7,7 @@ import '../l10n/khao_l10n.dart';
 import '../models/menu_models.dart';
 import '../models/sections.dart';
 import '../theme/khao_theme.dart';
+import '../widgets/advance_order_section.dart';
 import '../widgets/checker_strip.dart';
 import '../widgets/common.dart';
 import '../widgets/day_timeline.dart';
@@ -172,7 +173,12 @@ class _HomePageState extends State<HomePage> {
               children: [
                 // Each section paints on its own layer, so scrolling only
                 // re-composites instead of repainting the whole page.
-                RepaintBoundary(child: HeroVideoSection(onNavigate: _navigate)),
+                RepaintBoundary(
+                  child: HeroVideoSection(
+                    onNavigate: _navigate,
+                    foodpandaUrl: menu.contact.foodpanda,
+                  ),
+                ),
                 // Space the ticker occupies (it overlaps hero and next section).
                 Container(
                   height:
@@ -198,12 +204,20 @@ class _HomePageState extends State<HomePage> {
                   child: MenuSection(key: _keys[KhaoSection.menu], menu: menu),
                 ),
                 const CheckerStrip.blackCream(),
-                RepaintBoundary(
-                  child: DayTimelineSection(
-                    key: _keys[KhaoSection.daypart],
-                    menu: menu,
+                if (KhaoSection.daypart.isVisible)
+                  RepaintBoundary(
+                    child: DayTimelineSection(
+                      key: _keys[KhaoSection.daypart],
+                      menu: menu,
+                    ),
                   ),
-                ),
+                if (KhaoSection.advance.isVisible)
+                  RepaintBoundary(
+                    child: AdvanceOrderSection(
+                      key: _keys[KhaoSection.advance],
+                      menu: menu,
+                    ),
+                  ),
                 const CheckerStrip.blackCream(flipped: true),
                 RepaintBoundary(
                   child: FindUsSection(
